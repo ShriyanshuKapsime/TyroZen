@@ -1,121 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My Notes</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { display: flex; gap: 20px; }
-        .sidebar { width: 200px; }
-        .notes-section { flex: 1; }
-        .note-card { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-        .tag { background: #eee; padding: 2px 6px; margin-right: 5px; border-radius: 3px; font-size: 0.9em; }
-        .toolbar button { margin-right: 5px; margin-bottom: 5px; }
-        #editor { border: 1px solid #ccc; padding: 10px; min-height: 150px; margin-bottom: 10px; }
-        table { border-collapse: collapse; width: 100%; margin: 5px 0; }
-        table, th, td { border: 1px solid #000; padding: 5px; }
-        ul { padding-left: 20px; }
-        input[type="text"] { width: 100%; margin-bottom: 5px; padding: 5px; }
-        button { padding: 5px 10px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notebook Notes</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Segoe UI", "Arial", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f7ecc5;
+      display: flex;
+      justify-content: center;
+      padding: clamp(16px, 4vw, 48px);
+    }
+
+    .workspace {
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: minmax(230px, 28%) 1fr;
+      gap: clamp(18px, 3vw, 36px);
+      align-items: flex-start;
+    }
+
+    .folder-panel {
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 18px;
+      padding: clamp(18px, 3vw, 28px);
+      border: 1px solid rgba(60, 53, 40, 0.12);
+      box-shadow: 0 10px 35px rgba(60, 53, 40, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .folder-panel h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #3c3528;
+    }
+
+    .folder-form {
+      display: flex;
+      gap: 8px;
+    }
+
+    .folder-form input {
+      flex: 1;
+      border: 1px solid rgba(60, 53, 40, 0.2);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .folder-form button {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: #3c3528;
+      color: #f7ecc5;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .folder-form button:hover {
+      opacity: 0.85;
+    }
+
+    .folder-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .folder-list li {
+      margin: 0;
+    }
+
+    .folder-list button {
+      width: 100%;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #3c3528;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s ease, border 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .folder-list button:hover {
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .folder-list button.active {
+      border: 1px solid rgba(60, 53, 40, 0.35);
+      box-shadow: 0 8px 18px rgba(60, 53, 40, 0.2);
+    }
+
+    .folder-hint {
+      margin: 0;
+      font-size: 0.9rem;
+      color: rgba(60, 53, 40, 0.7);
+    }
+
+    .notebook {
+      width: min(900px, 100%);
+      background-color: #fffaf1;
+      background-image:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(60, 53, 40, 0.25),
+          rgba(60, 53, 40, 0.25) 1px,
+          transparent 1px,
+          transparent 36px
+        );
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(60, 53, 40, 0.25);
+      padding: clamp(18px, 3vw, 32px) clamp(18px, 4vw, 48px);
+      border: 1px solid rgba(60, 53, 40, 0.15);
+    }
+
+    .note-area {
+      width: 100%;
+      min-height: 70vh;
+      outline: none;
+      border: none;
+      background: transparent;
+      font-size: clamp(1rem, 1.2vw, 1.3rem);
+      line-height: 36px;
+      color: #3c3528;
+      caret-color: #c05621;
+      white-space: pre-wrap;
+    }
+    .note-area.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .note-area:focus-visible {
+      outline: none;
+    }
+
+    .note-status {
+      font-size: 0.95rem;
+      color: rgba(60, 53, 40, 0.8);
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
 </head>
 <body>
-<h1>My Notes</h1>
+  <section class="workspace">
+    <aside class="folder-panel">
+      <h2>Notes</h2>
+      <form class="folder-form" id="folderForm">
+        <input
+          type="text"
+          id="folderName"
+          name="folderName"
+          placeholder="New folder name"
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Add</button>
+      </form>
+      <ul class="folder-list" id="folderList"></ul>
+      <p class="folder-hint">Create a folder to keep notes separated.</p>
+    </aside>
+    <main class="notebook">
+      <div class="note-status" id="noteStatus" aria-live="polite">
+        Create or pick a folder to start writing.
+      </div>
+      <div
+        id="note"
+        class="note-area disabled"
+        contenteditable="false"
+        role="textbox"
+        spellcheck="false"
+        aria-label="Notebook writing area"
+      ></div>
+    </main>
+  </section>
 
-<div class="container">
-    <!-- Sidebar for Tags -->
-    <div class="sidebar">
-        <h3>Tags</h3>
-        <ul>
-            <li><a href="/notes">All</a></li>
-            {% for tag in all_tags %}
-            <li><a href="/notes?tag={{ tag }}">{{ tag }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
+  <script>
+    const note = document.getElementById("note");
+    const folderForm = document.getElementById("folderForm");
+    const folderInput = document.getElementById("folderName");
+    const folderList = document.getElementById("folderList");
+    const noteStatus = document.getElementById("noteStatus");
 
-    <!-- Main Notes Section -->
-    <div class="notes-section">
-        <!-- Search Bar -->
-        <form method="GET">
-            <input type="text" name="search" placeholder="Search title..." value="{{ search_query }}">
-            <button type="submit">Search</button>
-        </form>
+    const folders = {};
+    let currentFolder = null;
 
-        <!-- Add Note Form -->
-        <h3>Add Note</h3>
-        <form method="POST" id="noteForm">
-            <input type="text" name="title" placeholder="Title" required>
-            <input type="text" name="tags" placeholder="Tags (comma separated)">
-
-            <!-- Toolbar -->
-            <div class="toolbar">
-                <button type="button" onclick="insertContent('<table border=1><tr><th>Header</th></tr><tr><td>Data</td></tr></table><br>')">Insert Table</button>
-                <button type="button" onclick="insertContent('<ul><li><input type=checkbox> New Task</li></ul><br>')">Insert Checklist</button>
-            </div>
-
-            <!-- Editable div for note content -->
-            <div id="editor" contenteditable="true"></div>
-
-            <!-- Hidden input to submit HTML content -->
-            <input type="hidden" name="content" id="noteContent">
-
-            <button type="submit" onclick="submitNote(event)">Save Note</button>
-        </form>
-
-        <!-- Display Notes -->
-        <h3>All Notes</h3>
-        {% for note in notes %}
-        <div class="note-card">
-            <h4>{{ note.title }}</h4>
-            <div>
-                Tags:
-                {% for tag in note.tags %}
-                <span class="tag">{{ tag }}</span>
-                {% endfor %}
-            </div>
-            <div class="note-content">{{ note.content | safe }}</div>
-            <a href="/notes/edit/{{ loop.index0 }}">Edit</a> |
-            <a href="/notes/delete/{{ loop.index0 }}">Delete</a>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<script>
-function insertContent(html) {
-    const editor = document.getElementById("editor");
-    editor.focus();
-    const sel = window.getSelection();
-    if (sel.getRangeAt && sel.rangeCount) {
-        const range = sel.getRangeAt(0);
-        range.deleteContents();
-        const el = document.createElement("div");
-        el.innerHTML = html;
-        const frag = document.createDocumentFragment();
-        let node, lastNode;
-        while ((node = el.firstChild)) {
-            lastNode = frag.appendChild(node);
+    const renderFolders = () => {
+      folderList.innerHTML = "";
+      Object.keys(folders).forEach((folderName) => {
+        const listItem = document.createElement("li");
+        const button = document.createElement("button");
+        button.textContent = folderName;
+        if (folderName === currentFolder) {
+          button.classList.add("active");
         }
-        range.insertNode(frag);
-        if (lastNode) {
-            range.setStartAfter(lastNode);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-    } else {
-        editor.innerHTML += html;
-    }
-}
+        button.addEventListener("click", () => selectFolder(folderName));
+        listItem.appendChild(button);
+        folderList.appendChild(listItem);
+      });
 
-function submitNote(e) {
-    e.preventDefault();
-    const content = document.getElementById("editor").innerHTML;
-    if (!content.trim()) { alert("Note cannot be empty!"); return; }
-    document.getElementById("noteContent").value = content;
-    document.getElementById("noteForm").submit();
-}
-</script>
+      if (!currentFolder) {
+        noteStatus.textContent = "Create or pick a folder to start writing.";
+        note.innerHTML = "";
+        note.classList.add("disabled");
+        note.setAttribute("contenteditable", "false");
+        return;
+      }
+
+      noteStatus.textContent = `Writing in "${currentFolder}"`;
+      note.classList.remove("disabled");
+      note.setAttribute("contenteditable", "true");
+      note.innerHTML = folders[currentFolder] || "";
+      note.focus();
+    };
+
+    const selectFolder = (name) => {
+      currentFolder = name;
+      renderFolders();
+    };
+
+    folderForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const newFolder = folderInput.value.trim();
+      if (!newFolder) {
+        return;
+      }
+      if (!folders[newFolder]) {
+        folders[newFolder] = "";
+      }
+      currentFolder = newFolder;
+      folderInput.value = "";
+      renderFolders();
+    });
+
+    note.addEventListener("input", () => {
+      if (!currentFolder) return;
+      folders[currentFolder] = note.innerHTML;
+    });
+
+    renderFolders();
+  </script>
 </body>
 </html>
