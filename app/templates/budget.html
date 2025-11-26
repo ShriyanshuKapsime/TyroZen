@@ -1,64 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Budget Manager</title>
+    <meta charset="UTF-8">
+    <title>Budget Manager | TyroZen</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='budget.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
+    <nav class="navbar">
+        <a href="{{ url_for('todo') }}" class="nav-item" data-nav="todo">To-Do</a>
+        <a  href="{{ url_for('notes') }}" class="nav-item" data-nav="notes">Notes</a>
+        <a href="{{ url_for('habits') }}" class="nav-item" data-nav="habits">Habits</a>
+        <a href="{{ url_for('dashboard') }}" class="nav-item nav-dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="{{ url_for('attendance') }}" class="nav-item" data-nav="attendance">Attendance</a>
+        <a href="{{ url_for('budget') }}" class="nav-item" data-nav="budget">Budget</a>
+        <a href="{{ url_for('documents') }}" class="nav-item" data-nav="documents">Documents</a>
+    </nav>
 
-<h2>Budget Manager</h2>
+<section class="page-wrap">
+  <div class="container">
 
-<!-- 1. SET BUDGET -->
-<h3>Set Monthly Budget</h3>
-<form method="POST">
-    <input type="hidden" name="form_type" value="set_budget">
-    <input type="number" name="total" placeholder="Enter total budget" step="0.01" required>
-    <button type="submit">Save Budget</button>
-</form>
+    <header class="page-header">
+      <h1>Budget Manager</h1>
+      <p class="muted">Track your budget, spending, and savings — all in one place.</p>
+    </header>
 
-<p><strong>Total Budget:</strong> ₹{{ total }}</p>
-<p><strong>Remaining:</strong> ₹{{ remaining }}</p>
+    <div class="grid">
 
-<hr>
+      <!-- LEFT -->
+      <div class="col controls">
 
-<!-- 2. ADD EXPENSE -->
-<h3>Add Expense</h3>
-<form method="POST">
-    <input type="hidden" name="form_type" value="add_expense">
+        <!-- Set Budget -->
+        <div class="card money">
+          <h3>Set Monthly Budget</h3>
+          <form method="POST">
+            <input type="hidden" name="form_type" value="set_budget">
 
-    <input type="text" name="item" placeholder="Item" required>
-    <input type="number" name="amount" placeholder="Amount" step="0.01" required>
+            <label>Total Budget (₹)</label>
+            <input name="total" type="number" step="0.01" required value="{{ total or 0 }}">
 
-    <select name="category" required>
-        <option>Food</option>
-        <option>Transport</option>
-        <option>Shopping</option>
-        <option>Books</option>
-        <option>Other</option>
-    </select>
+            <button class="btn primary">Save Budget</button>
+          </form>
+        </div>
 
-    <button type="submit">Add Expense</button>
-</form>
+        <!-- Add Expense -->
+        <div class="card notes">
+          <h3>Add Expense</h3>
+          <form method="POST">
+            <input type="hidden" name="form_type" value="add_expense">
 
-<hr>
+            <label>Item</label>
+            <input name="item" type="text" required>
 
-<!-- 3. LIST OF EXPENSES -->
-<h3>Expenses</h3>
-<ul>
-{% for e in expenses %}
-    <li>{{ e.item }} - ₹{{ e.amount }} ({{ e.category }})</li>
-{% endfor %}
-</ul>
+            <label>Amount (₹)</label>
+            <input name="amount" type="number" step="0.01" required>
 
-<hr>
+            <label>Category</label>
+            <select name="category" required>
+              <option>Food & Drink</option>
+              <option>Transport</option>
+              <option>Groceries</option>
+              <option>Subscriptions</option>
+              <option>Study</option>
+              <option>Other</option>
+            </select>
 
-<!-- 4. Category spending -->
-<h3>Category Breakdown</h3>
-<ul>
-{% for cat, amt in category_totals.items() %}
-    <li>{{ cat }}: ₹{{ amt }}</li>
-{% endfor %}
-</ul>
+            <button class="btn accent">Add Expense</button>
+          </form>
+        </div>
+
+        <!-- Summary -->
+        <div class="card docs">
+          <h3>Summary</h3>
+
+          {% set spent = (total - remaining) %}
+          <dl class="summary">
+            <dt>Total Budget</dt><dd>₹ {{ total|round(2) }}</dd>
+            <dt>Total Spent</dt><dd>₹ {{ spent|round(2) }}</dd>
+            <dt>Remaining</dt><dd>₹ {{ remaining|round(2) }}</dd>
+          </dl>
+        </div>
+
+       
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="col charts">
+
+        <div class="card todo">
+          <h3>Spending by Category</h3>
+          <canvas id="pieChart"></canvas>
+        </div>
+
+        <div class="card todo">
+          <h3>Category Breakdown</h3>
+          <canvas id="barChart"></canvas>
+        </div>
+
+        <div class="card todo">
+          <h3>Recent Expenses</h3>
+          <table class="expenses-table">
+            <thead>
+              <tr><th>Item</th><th>Category</th><th>Amount</th></tr>
+            </thead>
+
+            <tbody>
+              {% for e in expenses|reverse %}
+                <tr>
+                  <td>{{ e.item }}</td>
+                  <td>{{ e.category }}</td>
+                  <td>₹ {{ e.amount|round(2) }}</td>
+                </tr>
+              {% else %}
+                <tr><td colspan="3" class="muted">No expenses yet</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  // Data from backend
+  const labels = {{ category_totals.keys()|list|tojson }};
+  const values = {{ category_totals.values()|list|tojson }};
+
+  // PIE CHART
+  new Chart(document.getElementById("pieChart"), {
+    type: "pie",
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: ["#e7f0ff", "#f7ecc5", "#e4f7e9", "#ffe8d3", "#f0e8ff", "#ececec"]
+      }]
+    }
+  });
+
+  // BAR CHART
+  new Chart(document.getElementById("barChart"), {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Amount (₹)",
+        data: values,
+        backgroundColor: "#3A7AFE"
+      }]
+    }
+  });
+</script>
 
 </body>
 </html>
-

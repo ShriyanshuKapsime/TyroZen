@@ -1,0 +1,258 @@
+body {
+    font-family: 'Manrope', sans-serif;
+     background: linear-gradient(90deg, #f5f6fb, #72747b);
+    -webkit-background-clip: text;
+    margin: 0;
+    padding: 0;
+}
+
+.vault-container {
+    width: 100%;
+    margin: auto;
+    padding-top: 30px;
+}
+
+.vault-header {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 25px;
+}
+
+#searchBar {
+    width: 60%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    margin-top: 15px;
+}
+
+.upload-box {
+    border-radius: 15px;
+   background: linear-gradient(90deg, #f5f6fb, #b5b7bc);
+    -webkit-background-clip: text;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 25px;
+    gap: 15px;
+}
+
+.upload-label {
+    background: #f0e8ff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.upload-label i {
+    font-size: 20px;
+}
+
+.category-select {
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 20px;
+}
+
+.upload-btn {
+    padding: 10px 18px;
+    background: #463f3f;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.category-title {
+    margin: 40px 0 20px 20px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+
+.doc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* bigger cards */
+    gap: 30px; /* MORE SPACE */
+    padding: 20px 40px;
+}
+
+
+.doc-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0px 5px 12px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.doc-icon {
+    font-size: 40px;
+    color: #777;
+}
+
+.doc-name {
+    font-weight: 500;
+    margin: 6px 0;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+    font-size: 14px;
+    max-width: 100%;
+}
+
+
+.doc-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+
+.action-btn {
+    background: #e7f0ff;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background: #ffcccc;
+}
+
+.empty-msg {
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Modal Preview */
+.modal {
+    display: none;
+    position: fixed;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+}
+
+.modal iframe {
+    width: 85%;
+    height: 85%;
+    margin-top: 40px;
+    display: block;
+    border-radius: 12px;
+    background: white;
+}
+
+.modal .close {
+    position: absolute;
+    right: 40px;
+    top: 20px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+}
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.2rem 2rem;
+    background: linear-gradient(90deg, #f5f6fb, #72747b);
+    -webkit-background-clip: text;
+    border-bottom: 1px solid #e5e5e5;
+
+    position: sticky;     
+    top: 0;               
+    z-index: 9999;        
+}
+
+
+.nav-item {
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    border-bottom-color: currentColor;
+}
+
+/* Glow Effects for Navigation Items */
+.nav-item[data-nav="todo"]:hover,
+.nav-item[data-nav="todo"].active {
+    border-bottom-color: #e7f0ff;
+    box-shadow: 0 4px 12px rgba(231, 240, 255, 0.6);
+}
+
+.nav-item[data-nav="notes"]:hover,
+.nav-item[data-nav="notes"].active {
+    border-bottom-color: #f7ecc5;
+    box-shadow: 0 4px 12px rgba(247, 236, 197, 0.6);
+}
+
+.nav-item[data-nav="habits"]:hover,
+.nav-item[data-nav="habits"].active {
+    border-bottom-color: #e4f7e9;
+    box-shadow: 0 4px 12px rgba(228, 247, 233, 0.6);
+}
+
+.nav-item[data-nav="attendance"]:hover,
+.nav-item[data-nav="attendance"].active {
+    border-bottom-color: #ffe8d3;
+    box-shadow: 0 4px 12px rgba(255, 232, 211, 0.6);
+}
+
+.nav-item[data-nav="budget"]:hover,
+.nav-item[data-nav="budget"].active {
+    border-bottom-color: #f0e8ff;
+    box-shadow: 0 4px 12px rgba(240, 232, 255, 0.6);
+}
+
+.nav-item[data-nav="documents"]:hover,
+.nav-item[data-nav="documents"].active {
+    border-bottom-color: #ececec;
+    box-shadow: 0 4px 12px rgba(236, 236, 236, 0.6);
+}
+
+/* Dashboard - Brick Reddish Gradient Glow */
+.nav-dashboard:hover,
+.nav-dashboard.active {
+    border-bottom-color: transparent;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f, #c44569);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4), 0 4px 12px rgba(238, 90, 111, 0.4);
+    position: relative;
+}
+
+.nav-dashboard:hover::after,
+.nav-dashboard.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ff6b6b, #ee5a6f, #c44569);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.6);
+}

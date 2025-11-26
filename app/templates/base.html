@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TyroZen{% endblock %}</title>
+     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+    <div><h1>TyroZen</h1></div>
+    <nav class="navbar">
+        <a href="#" class="nav-item" data-nav="todo">To-Do</a>
+        <a href="#" class="nav-item" data-nav="notes">Notes</a>
+        <a href="#" class="nav-item" data-nav="habits">Habits</a>
+        <a href="#" class="nav-item nav-dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="#" class="nav-item" data-nav="attendance">Attendance</a>
+        <a href="#" class="nav-item" data-nav="budget">Budget</a>
+        <a href="#" class="nav-item" data-nav="documents">Documents</a>
+    </nav>
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+</body>
+</html>

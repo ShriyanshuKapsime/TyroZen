@@ -1,47 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Document Vault</title>
+    <meta charset="UTF-8">
+    <title>Document Vault | TyroZen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='documents.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
 </head>
+
 <body>
+    <nav class="navbar">
+        <a href="{{ url_for('todo') }}" class="nav-item" data-nav="todo">To-Do</a>
+        <a  href="{{ url_for('notes') }}" class="nav-item" data-nav="notes">Notes</a>
+        <a href="{{ url_for('habits') }}" class="nav-item" data-nav="habits">Habits</a>
+        <a href="{{ url_for('dashboard') }}" class="nav-item nav-dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="{{ url_for('attendance') }}" class="nav-item" data-nav="attendance">Attendance</a>
+        <a href="{{ url_for('budget') }}" class="nav-item" data-nav="budget">Budget</a>
+        <a href="{{ url_for('documents') }}" class="nav-item" data-nav="documents">Documents</a>
+    </nav>
 
-<h2>Document Vault</h2>
+<div class="vault-container">
 
-<!-- Upload Form -->
-<form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" required>
+    <header class="vault-header">
+        <h1>📄 Document Vault</h1>
+        <p>Upload, preview, download & share documents in one place.</p>
 
-    <select name="category">
-        <option>Notes</option>
-        <option>Assignments</option>
-        <option>Modules</option>
-        <option>Others</option>
-    </select>
+        <!-- Search -->
+        <input type="text" id="searchBar" placeholder="Search documents...">
+    </header>
 
-    <button type="submit">Upload</button>
-</form>
+    <!-- Upload Box -->
+    <div class="upload-box docs">
+        <form method="POST" enctype="multipart/form-data">
+            <label class="upload-label">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Choose file to upload</span>
+                <input type="file" name="file" required hidden>
+            </label>
 
-<hr>
+            <select name="category" class="category-select">
+                <option>Notes</option>
+                <option>Assignments</option>
+                <option>Modules</option>
+                <option>Others</option>
+            </select>
 
-<!-- Categories Listing -->
-{% for category, docs in docs_by_category.items() %}
-    <h3>{{ category }}</h3>
-
-    {% if docs %}
-        <ul>
-        {% for d in docs %}
-            <li>
-                <a href="/uploads/{{ d.path }}" target="_blank">{{ d.name }}</a>
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p><i>No files in this category.</i></p>
-    {% endif %}
+            <button type="submit" class="upload-btn">Upload</button>
+        </form>
+    </div>
 
     <hr>
-{% endfor %}
+
+    <!-- Categories -->
+    {% for category, docs in docs_by_category.items() %}
+        <h2 class="category-title">{{ category }}</h2>
+
+        {% if docs %}
+        <div class="doc-grid">
+            {% for d in docs %}
+            <div class="doc-card" data-name="{{ d.name }}">
+                
+                <div class="doc-icon">
+                    <i class="fa-solid fa-file"></i>
+                </div>
+
+                <p class="doc-name">{{ d.name }}</p>
+
+                <div class="doc-actions">
+
+                    <!-- PREVIEW -->
+                    <button class="action-btn preview-btn" 
+                        onclick="previewDocument('/uploads/{{ d.path }}')">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+
+                    <!-- DOWNLOAD -->
+                    <a class="action-btn" 
+                        href="/uploads/{{ d.path }}" 
+                        download>
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+
+                    <!-- SHARE -->
+                    <button class="action-btn" 
+                        onclick="copyShareLink('{{ request.host_url }}uploads/{{ d.path }}')">
+                        <i class="fa-solid fa-share-from-square"></i>
+                    </button>
+
+                    <!-- DELETE -->
+                  <a class="action-btn delete-btn" href="{{ url_for('delete_document', path=d.path) }}">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+
+
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="empty-msg">No documents in this category.</p>
+        {% endif %}
+
+        <hr>
+    {% endfor %}
+</div>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="modal">
+    <span class="close" onclick="closePreview()">&times;</span>
+    <iframe id="previewFrame"></iframe>
+</div>
+
+<script src="{{ url_for('static', filename='documents.js') }}"></script>
 
 </body>
 </html>
-
