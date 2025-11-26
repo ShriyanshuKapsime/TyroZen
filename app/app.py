@@ -509,6 +509,87 @@ def notes_edit(index):
 
 
 
+# ---------------- Attendance Routes ----------------
+@app.route("/attendance", methods=["GET", "POST"])
+def attendance():
+    if "user" not in session:
+        return redirect("/login")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    if "attendance" not in data:
+        data["attendance"] = []
+
+    # Add new subject
+    if request.method == "POST":
+        subject_name = request.form["subject"]
+        total_classes = int(request.form["total_classes"])
+        attended_classes = int(request.form["attended_classes"])
+        min_percentage = 75  # you can make this configurable
+
+        attendance_percentage = (attended_classes / total_classes) * 100 if total_classes > 0 else 0
+        max_skips = int((attended_classes - total_classes * min_percentage / 100) * -1)
+        if max_skips < 0:
+            max_skips = 0
+
+        new_subject = {
+            "subject": subject_name,
+            "total_classes": total_classes,
+            "attended_classes": attended_classes,
+            "attendance_percentage": round(attendance_percentage, 2),
+            "max_skips": max_skips
+        }
+
+        data["attendance"].append(new_subject)
+        save_user_data(email, data)
+        return redirect("/attendance")
+
+    return render_template("attendance.html", subjects=data["attendance"])
+
+
+@app.route("/attendance/delete/<int:index>")
+def attendance_delete(index):
+    if "user" not in session:
+        return redirect("/login")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    if 0 <= index < len(data["attendance"]):
+        data["attendance"].pop(index)
+        save_user_data(email, data)
+
+    return redirect("/attendance")
+
+
+@app.route("/attendance/edit/<int:index>", methods=["GET", "POST"])
+def attendance_edit(index):
+    if "user" not in session:
+        return redirect("/login")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    if request.method == "POST":
+        total_classes = int(request.form["total_classes"])
+        attended_classes = int(request.form["attended_classes"])
+        min_percentage = 75
+
+        data["attendance"][index]["total_classes"] = total_classes
+        data["attendance"][index]["attended_classes"] = attended_classes
+        data["attendance"][index]["attendance_percentage"] = round((attended_classes / total_classes) * 100, 2)
+        max_skips = int((attended_classes - total_classes * min_percentage / 100) * -1)
+        if max_skips < 0:
+            max_skips = 0
+        data["attendance"][index]["max_skips"] = max_skips
+
+        save_user_data(email, data)
+        return redirect("/attendance")
+
+    subject = data["attendance"][index]
+    return render_template("attendance_edit.html", subject=subject, index=index)
+
 
 
 if __name__ == "__main__":
