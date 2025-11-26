@@ -1,62 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>To-Do List</title>
-    <style>
-        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
-        .container { width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
-        .task { padding: 10px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; }
-        .completed { text-decoration: line-through; color: gray; }
-        form { margin-bottom: 20px; }
-        input, select { padding: 8px; margin-right: 10px; }
-        button { padding: 8px 12px; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TyroZen - Advanced To-Do List</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="container">
+    <!-- Primary Navigation -->
+    <nav class="navbar">
+        <a href="#" class="nav-item" data-nav="todo">To-Do</a>
+        <a href="#" class="nav-item" data-nav="notes">Notes</a>
+        <a href="#" class="nav-item" data-nav="habits">Habits</a>
+        <a href="#" class="nav-item nav-dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="#" class="nav-item" data-nav="attendance">Attendance</a>
+        <a href="#" class="nav-item" data-nav="budget">Budget</a>
+        <a href="#" class="nav-item" data-nav="documents">Documents</a>
+    </nav>
 
-    <h2>Your To-Do List</h2>
+    <!-- Secondary Navigation -->
+    <nav class="secondary-nav">
+        <a href="?view=daily" class="sub-link" data-view="daily">Daily</a>
+        <a href="?view=weekly" class="sub-link" data-view="weekly">Weekly</a>
+        <a href="?view=monthly" class="sub-link" data-view="monthly">Monthly</a>
+    </nav>
 
-    <!-- Add Task -->
-    <form method="POST">
-        <input type="text" name="task" placeholder="Task name" required>
+    <main class="container">
+        <section class="cards-grid" id="cardsGrid"></section>
+    </main>
 
-        <select name="category">
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-        </select>
-
-        <select name="priority">
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-        </select>
-
-        <input type="date" name="deadline">
-
-        <button type="submit">Add</button>
-    </form>
-
-    <!-- Task List -->
-    {% for t in todo %}
-    <div class="task">
-        <div>
-            <b class="{{ 'completed' if t.completed }}">{{ t.task }}</b>
-            <div style="font-size: 12px; color: gray;">
-                {{ t.category }} • {{ t.priority }} • {{ t.deadline }}
-            </div>
-        </div>
-
-        <div>
-            <a href="/todo/toggle/{{ loop.index0 }}">✔</a>
-            &nbsp; | &nbsp;
-            <a href="/todo/delete/{{ loop.index0 }}">🗑</a>
-        </div>
-    </div>
-    {% endfor %}
-
-</div>
+    <script src="script.js"></script>
 </body>
 </html>
+
