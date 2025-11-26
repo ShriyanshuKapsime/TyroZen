@@ -8,7 +8,7 @@
     },
     "budget": {
         "total": 5000.0,
-        "remaining": 2635.0,
+        "remaining": 2385.0,
         "expenses": [
             {
                 "item": "Food",
@@ -34,8 +34,34 @@
                 "item": "cloths",
                 "amount": 740.0,
                 "category": "Other"
+            },
+            {
+                "item": "dosa",
+                "amount": 250.0,
+                "category": "Food & Drink"
             }
         ]
     },
-    "documents": []
+    "documents": [
+        {
+            "name": "Convergence_ppt_template.pdf",
+            "path": "shriyanshu_dot_0022_at_gmail_dot_com/Convergence_ppt_template.pdf",
+            "category": "Notes"
+        },
+        {
+            "name": "ICO_Presentation.pdf",
+            "path": "shriyanshu_dot_0022_at_gmail_dot_com/ICO_Presentation.pdf",
+            "category": "Assignments"
+        },
+        {
+            "name": "Indian_Food_Nutrients.pdf",
+            "path": "shriyanshu_dot_0022_at_gmail_dot_com/Indian_Food_Nutrients.pdf",
+            "category": "Others"
+        },
+        {
+            "name": "ResumeShriyanshu.pdf",
+            "path": "shriyanshu_dot_0022_at_gmail_dot_com/ResumeShriyanshu.pdf",
+            "category": "Others"
+        }
+    ]
 }

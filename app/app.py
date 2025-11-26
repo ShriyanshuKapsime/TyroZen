@@ -15,6 +15,8 @@ app.secret_key = "supersecretkey"  # change for production
 USER_DATA_FOLDER = "./data/users/"
 UPLOAD_FOLDER = "./uploads/"
 ALLOWED = {"pdf", "png", "jpg", "jpeg"}
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
 
 os.makedirs(USER_DATA_FOLDER, exist_ok=True)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -422,10 +424,35 @@ def documents():
         docs_by_category.setdefault(cat, []).append(d)
     return render_template("documents.html", docs_by_category=docs_by_category)
 
+@app.route("/check-login")
+def check_login():
+    return jsonify({"logged_in": "user" in session})
+
+@app.route("/delete_document/<path:path>")
+def delete_document(path):
+    if "user" not in session:
+        return redirect("/")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    # 1. Delete file from disk
+    full_path = os.path.join(UPLOAD_FOLDER, path)
+    if os.path.exists(full_path):
+        os.remove(full_path)
+
+    # 2. Remove entry from user's JSON
+    data["documents"] = [d for d in data.get("documents", []) if d["path"] != path]
+    save_user_data(email, data)
+
+    # 3. Redirect back
+    return redirect(url_for("documents"))
+
+
 # -----------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
     
-@app.route("/check-login")
-def check_login():
-    return jsonify({"logged_in": "user" in session})
+
+
+

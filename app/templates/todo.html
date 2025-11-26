@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TyroZen - Advanced To-Do List</title>
-    <link rel="stylesheet" href="styles.css">
+     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <!-- Primary Navigation -->
-    <nav class="navbar">
-        <a href="#" class="nav-item" data-nav="todo">To-Do</a>
-        <a href="#" class="nav-item" data-nav="notes">Notes</a>
-        <a href="#" class="nav-item" data-nav="habits">Habits</a>
-        <a href="#" class="nav-item nav-dashboard" data-nav="dashboard">Dashboard</a>
-        <a href="#" class="nav-item" data-nav="attendance">Attendance</a>
-        <a href="#" class="nav-item" data-nav="budget">Budget</a>
-        <a href="#" class="nav-item" data-nav="documents">Documents</a>
-    </nav>
+   <nav class="navbar">
+        <a href="{{ url_for('todo') }}" class="nav-item" data-nav="todo">To-Do</a>
+        <a  href="{{ url_for('notes') }}" class="nav-item" data-nav="notes">Notes</a>
+        <a href="{{ url_for('habits') }}" class="nav-item" data-nav="habits">Habits</a>
+        <a href="{{ url_for('dashboard') }}" class="nav-item nav-dashboard" data-nav="dashboard">Dashboard</a>
+        <a href="{{ url_for('attendance') }}" class="nav-item" data-nav="attendance">Attendance</a>
+        <a href="{{ url_for('budget') }}" class="nav-item" data-nav="budget">Budget</a>
+        <a href="{{ url_for('documents') }}" class="nav-item" data-nav="documents">Documents</a>
+    </nav>
 
     <!-- Secondary Navigation -->
     <nav class="secondary-nav">
@@ -29,7 +29,7 @@
         <section class="cards-grid" id="cardsGrid"></section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
 
