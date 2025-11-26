@@ -1,5 +1,13 @@
 {
-    "todo": [],
+    "todo": [
+        {
+            "task": "run",
+            "category": "daily",
+            "priority": "medium",
+            "deadline": "2025-11-27",
+            "completed": true
+        }
+    ],
     "notes": [],
     "habits": [],
     "budget": {},
