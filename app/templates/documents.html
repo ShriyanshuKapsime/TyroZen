@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Vault</title>
+</head>
+<body>
+
+<h2>Document Vault</h2>
+
+<!-- Upload Form -->
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" required>
+
+    <select name="category">
+        <option>Notes</option>
+        <option>Assignments</option>
+        <option>Modules</option>
+        <option>Others</option>
+    </select>
+
+    <button type="submit">Upload</button>
+</form>
+
+<hr>
+
+<!-- Categories Listing -->
+{% for category, docs in docs_by_category.items() %}
+    <h3>{{ category }}</h3>
+
+    {% if docs %}
+        <ul>
+        {% for d in docs %}
+            <li>
+                <a href="/uploads/{{ d.path }}" target="_blank">{{ d.name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p><i>No files in this category.</i></p>
+    {% endif %}
+
+    <hr>
+{% endfor %}
+
+</body>
+</html>
+
