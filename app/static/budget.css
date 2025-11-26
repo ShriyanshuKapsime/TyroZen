@@ -1,0 +1,203 @@
+body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(90deg, #f0e8ff, #b5abc7);
+    -webkit-background-clip: text;
+}
+
+.page-wrap {
+    padding: 40px;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.muted {
+    color: #666;
+}
+
+.grid {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.col {
+    flex: 1;
+    min-width: 330px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+
+/* THEME COLOURS */
+.todo { background:#e7f0ff; }
+.notes { background:#f7ecc5; }
+.habit { background:#e4f7e9; }
+.attendance { background:#ffe8d3; }
+.money { background:#f0e8ff; }
+.docs { background:#ececec; }
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    margin-top: 4px;
+    font-size: 15px;
+}
+
+button.btn {
+    margin-top: 12px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn.primary {
+    background: #3A7AFE;
+    color: white;
+}
+.btn.accent {
+    background: #ff8b4d;
+    color: white;
+}
+
+/* Summary */
+.summary dt {
+    font-weight: bold;
+}
+.summary dd {
+    margin-bottom: 8px;
+}
+
+/* Saving Goal Bar */
+.progress-bar {
+    background: #ddd;
+    height: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+.progress-fill {
+    background: #3A7AFE;
+    height: 100%;
+    border-radius: 10px;
+}
+
+/* Expenses Table */
+.expenses-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.expenses-table th {
+    text-align: left;
+    padding-bottom: 10px;
+}
+.expenses-table td {
+    padding: 6px 0;
+}
+/* Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(90deg, #f0e8ff, #b5abc7);
+    -webkit-background-clip: text;
+    border-bottom: 1px solid #e5e5e5;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    border-bottom-color: currentColor;
+}
+
+/* Glow Effects for Navigation Items */
+.nav-item[data-nav="todo"]:hover,
+.nav-item[data-nav="todo"].active {
+    border-bottom-color: #e7f0ff;
+    box-shadow: 0 4px 12px rgba(231, 240, 255, 0.6);
+}
+
+.nav-item[data-nav="notes"]:hover,
+.nav-item[data-nav="notes"].active {
+    border-bottom-color: #f7ecc5;
+    box-shadow: 0 4px 12px rgba(247, 236, 197, 0.6);
+}
+
+.nav-item[data-nav="habits"]:hover,
+.nav-item[data-nav="habits"].active {
+    border-bottom-color: #e4f7e9;
+    box-shadow: 0 4px 12px rgba(228, 247, 233, 0.6);
+}
+
+.nav-item[data-nav="attendance"]:hover,
+.nav-item[data-nav="attendance"].active {
+    border-bottom-color: #ffe8d3;
+    box-shadow: 0 4px 12px rgba(255, 232, 211, 0.6);
+}
+
+.nav-item[data-nav="budget"]:hover,
+.nav-item[data-nav="budget"].active {
+    border-bottom-color: #f0e8ff;
+    box-shadow: 0 4px 12px rgba(240, 232, 255, 0.6);
+}
+
+.nav-item[data-nav="documents"]:hover,
+.nav-item[data-nav="documents"].active {
+    border-bottom-color: #ececec;
+    box-shadow: 0 4px 12px rgba(236, 236, 236, 0.6);
+}
+
+/* Dashboard - Brick Reddish Gradient Glow */
+.nav-dashboard:hover,
+.nav-dashboard.active {
+    border-bottom-color: transparent;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f, #c44569);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4), 0 4px 12px rgba(238, 90, 111, 0.4);
+    position: relative;
+}
+
+.nav-dashboard:hover::after,
+.nav-dashboard.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ff6b6b, #ee5a6f, #c44569);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.6);
+}

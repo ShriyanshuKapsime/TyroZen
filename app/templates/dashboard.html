@@ -1,3 +1,81 @@
-<h2>Welcome, {{ user.name }}!</h2>
-<a href="/logout">Logout</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | TyroZen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
 
+<body>
+    <h2>Welcome, {{ user.name }}!</h2>
+
+
+<!-- TOP NAV -->
+<nav class="navbar">
+    <div class="nav-left">
+        <h1 class="logo">TyroZen</h1>
+    </div>
+
+    <div class="nav-right">
+        <p class="welcome">Hi, {{ user.name }} 👋</p>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+</nav>
+
+<!-- MAIN DASHBOARD -->
+<section class="dashboard">
+
+    <h2 class="section-heading">Your Dashboard</h2>
+    <p class="section-sub">Manage your entire student life from here.</p>
+
+    <div class="card-grid">
+
+        <!-- To-Do -->
+        <div class="dash-card todo">
+            <h3>To-Do List</h3>
+            <p>Create tasks and stay organised.</p>
+            <a href="/todo" class="card-btn">Open</a>
+        </div>
+
+        <!-- Notes -->
+        <div class="dash-card notes">
+            <h3>Notes</h3>
+            <p>Store important class notes.</p>
+            <a href="/notes" class="card-btn">Open</a>
+        </div>
+
+        <!-- Habit Tracker -->
+        <div class="dash-card habit">
+            <h3>Habit Tracker</h3>
+            <p>Track habits & build discipline.</p>
+            <a href="/habit" class="card-btn">Open</a>
+        </div>
+
+        <!-- Attendance -->
+        <div class="dash-card attendance">
+            <h3>Attendance</h3>
+            <p>Know how many classes you can skip.</p>
+            <a href="/attendance" class="card-btn">Open</a>
+        </div>
+
+        <!-- Budget -->
+        <div class="dash-card money">
+            <h3>Budget Manager</h3>
+            <p>Track spending & save money.</p>
+            <a href="/budget" class="card-btn">Open</a>
+        </div>
+
+        <!-- Documents -->
+        <div class="dash-card docs">
+            <h3>Document Vault</h3>
+            <p>Store all PDFs & IDs safely.</p>
+            <a href="/document" class="card-btn">Open</a>
+        </div>
+
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+</html>

@@ -56,3 +56,27 @@ document.getElementById("registerForm").onsubmit = async (e) => {
         document.getElementById("registerMsg").style.color = "red";
     }
 };
+// Detect login status from server
+async function checkLogin() {
+    const res = await fetch("/check-login");
+    const data = await res.json();
+    return data.logged_in;
+}
+
+// Handle card button clicks
+document.querySelectorAll(".card-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+
+        const loggedIn = await checkLogin();
+
+        if (!loggedIn) {
+            // not logged in → open login modal
+            document.getElementById("loginModal").style.display = "flex";
+            return;
+        }
+
+        // logged in → open that page
+        const link = btn.getAttribute("data-link");
+        window.location.href = link;
+    });
+});

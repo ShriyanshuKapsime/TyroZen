@@ -73,6 +73,11 @@ def dashboard():
 def logout():
     session.clear()
     return redirect("/")
+def get_user_file(email):
+    """Returns the JSON file path for a specific user's stored data"""
+    safe_email = email.replace("@", "_at_").replace(".", "_dot_")
+    return os.path.join(DATA_DIR, f"{safe_email}.json")
+
 
 def load_user_data(email):
     file = get_user_file(email)
@@ -140,7 +145,7 @@ def budget():
         budget_data["remaining"] -= amount
 
         budget_data["expenses"].append({
-            "item": item,
+            "item": item,   
             "amount": amount,
             "category": category
         })
@@ -167,3 +172,7 @@ def budget():
 # last block
 if __name__ == "__main__":
     app.run(debug=True)
+    
+@app.route("/check-login")
+def check_login():
+    return jsonify({"logged_in": "user" in session})

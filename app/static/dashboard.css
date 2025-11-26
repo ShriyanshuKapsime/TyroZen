@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+    font-family: "Manrope", sans-serif;
+    background: #fafafa;
+    color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+    background: white;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #3A3A3A;
+}
+
+.welcome {
+    margin-right: 16px;
+    font-weight: 600;
+}
+
+.logout-btn {
+    padding: 8px 18px;
+    background: #ff5252;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.logout-btn:hover {
+    background: #ff3232;
+}
+
+/* DASHBOARD SECTION */
+.dashboard {
+    padding: 40px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.section-heading {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.section-sub {
+    color: #666;
+    margin-bottom: 40px;
+}
+
+/* CARD GRID */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+/* CARDS */
+.dash-card {
+    padding: 22px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+}
+
+.dash-card:hover {
+    transform: translateY(-6px);
+}
+
+.dash-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.card-btn {
+    margin-top: 20px;
+    padding: 10px;
+    background: #3a3a3a;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.card-btn:hover {
+    background: #000;
+}
+
+/* FEATURE COLORS */
+.todo { background: #e7f0ff; }
+.notes { background: #f7ecc5; }
+.habit { background: #e4f7e9; }
+.attendance { background: #ffe8d3; }
+.money { background: #f0e8ff; }
+.docs { background: #ececec; }
