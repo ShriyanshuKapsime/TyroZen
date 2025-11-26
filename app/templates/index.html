@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TyroZen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chicle&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="bgsquiggy">
+        <div id="tyrozen">
+            <span class="tz">TyroZen</span>
+        </div>
+        <div id="description">
+            <p class="desc-text">
+            TyroZen is a student life management platform designed to bring all essential
+            academic and personal productivity tools into one clean dashboard. Instead of switching between
+            different apps for tasks, notes, attendance, documents, or money tracking, TyroZen gives 
+            students a single place to manage everything.
+            </p>
+        </div>
+    </div>
+    <div id="spottedbg">
+        <!-- <div class="features"></div> -->
+        <section id="features">
+            <h2 class="section-title">Everything You Need. All in One Place.</h2>
+
+            <div class="card-grid">
+
+                <!-- To-Do -->
+                <div class="feature-card todo">
+                    <h3>To-Do List</h3>
+                    <p>Plan your day, track tasks, and get things done without chaos.</p>
+                    <button class="card-btn todo-btn">Open To-Do</button>
+                </div>
+
+                <!-- Notes -->
+                <div class="feature-card notes">
+                    <h3>Notes</h3>
+                    <p>Store ideas, class notes, and reminders in one clean space.</p>
+                    <button class="card-btn notes-btn">Open Notes</button>
+                </div>
+
+                <!-- Habit Tracker -->
+                <div class="feature-card habit">
+                    <h3>Habit Tracker</h3>
+                    <p>Build good habits & keep your streak growing every day.</p>
+                    <button class="card-btn habit-btn">Track Habits</button>
+                </div>
+
+                <!-- Attendance -->
+                <div class="feature-card attendance">
+                    <h3>Attendance</h3>
+                    <p>Know how many classes you can skip and stay safe.</p>
+                    <button class="card-btn attendance-btn">Check Attendance</button>
+                </div>
+
+                <!-- Budget Manager -->
+                <div class="feature-card money">
+                    <h3>Budget Manager</h3>
+                    <p>Track expenses, save more, and manage your student budget.</p>
+                    <button class="card-btn money-btn">View Budget</button>
+                </div>
+
+                <!-- Document Vault -->
+                <div class="feature-card docs">
+                    <h3>Documents</h3>
+                    <p>Keep all PDFs, IDs, and files safe in one easy vault.</p>
+                    <button class="card-btn docs-btn">View Docs</button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="login-section">
+            <h2 class="login-title">Ready to get started?</h2>
+            <p class="login-subtext">Log in and bring your entire student life into one place.</p>
+
+            <button id="openLogin" class="login-btn">Login</button>
+
+        </section>
+    </div>
+    <!-- <button id="openLogin" class="main-login-btn">Login</button> -->
+
+<!-- ---------------- LOGIN POPUP ---------------- -->
+<div id="loginModal" class="modal-bg">
+    <div class="modal-box">
+        <button id="closeLogin" class="close-btn">&times;</button>
+
+        <h2>Login</h2>
+        <p id="loginMsg" class="msg"></p>
+
+        <form id="loginForm">
+            <input name="email" type="email" placeholder="Email" required class="input-field">
+            <input name="password" type="password" placeholder="Password" required class="input-field">
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+
+        <p class="switch-text">
+            No account? <span id="openRegisterFromLogin">Register</span>
+        </p>
+    </div>
+</div>
+
+<!-- ---------------- REGISTER POPUP ---------------- -->
+<div id="registerModal" class="modal-bg">
+    <div class="modal-box">
+        <button id="closeRegister" class="close-btn">&times;</button>
+
+        <h2>Create Account</h2>
+        <p id="registerMsg" class="msg"></p>
+
+        <form id="registerForm">
+            <input name="name" type="text" placeholder="Name" required class="input-field">
+            <input name="email" type="email" placeholder="Email" required class="input-field">
+            <input name="password" type="password" placeholder="Password" required class="input-field">
+            <button type="submit" class="submit-btn">Register</button>
+        </form>
+
+        <p class="switch-text">
+            Already have an account? <span id="openLoginFromRegister">Login</span>
+        </p>
+    </div>
+
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+
+</body>
+</html>

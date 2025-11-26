@@ -1,93 +1,78 @@
-from flask import Flask, render_template, request, redirect, session, url_for, flash
+from flask import Flask, render_template, request, redirect, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-import json
-import os
+import json, os
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-USER_DB = "./data/users.json"
+DATA_DIR = "data"
+USER_DB = os.path.join(DATA_DIR, "users.json")
+
+def ensure_data_dir():
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
 
 def load_users():
+    ensure_data_dir()
     if not os.path.exists(USER_DB):
         return []
     with open(USER_DB, "r") as f:
-        return json.load(f)
+        try:
+            return json.load(f)
+        except:
+            return []
 
 def save_users(users):
+    ensure_data_dir()
     with open(USER_DB, "w") as f:
         json.dump(users, f, indent=4)
 
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-# Register route
-
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/register", methods=["POST"])
 def register():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
-        name = request.form["name"]
+    name = request.form["name"]
+    email = request.form["email"].lower()
+    password = request.form["password"]
 
-        users = load_users()
+    users = load_users()
 
-        # Check if user exists
-        for u in users:
-            if u["email"] == email:
-                flash("User already exists!")
-                return redirect("/register")
+    for u in users:
+        if u["email"] == email:
+            return jsonify({"success": False, "message": "User already exists!"})
 
-        hashed_pwd = generate_password_hash(password)
+    hashed_pwd = generate_password_hash(password)
+    users.append({"name": name, "email": email, "password": hashed_pwd})
+    save_users(users)
 
-        users.append({"name": name, "email": email, "password": hashed_pwd})
-        save_users(users)
+    return jsonify({"success": True, "message": "Account created! Please log in."})
 
-        flash("Registered successfully! Login now.")
-        return redirect("/login")
-
-    return render_template("register.html")
-
-
-# Login route
-
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["POST"])
 def login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
+    email = request.form["email"].lower()
+    password = request.form["password"]
 
-        users = load_users()
+    users = load_users()
 
-        for u in users:
-            if u["email"] == email and check_password_hash(u["password"], password):
-                session["user"] = {
-                        "email": email,
-                        "name": u["name"]
-                        }
-                return redirect("/dashboard")
+    for u in users:
+        if u["email"] == email and check_password_hash(u["password"], password):
+            session["user"] = {"name": u["name"], "email": email}
+            return jsonify({"success": True, "redirect": "/dashboard"})
 
-        flash("Invalid credentials!")
-        return redirect("/login")
-
-    return render_template("login.html")
-
-
-# dashboard route
+    return jsonify({"success": False, "message": "Invalid email or password"})
 
 @app.route("/dashboard")
 def dashboard():
     if "user" not in session:
-        return redirect("/login")
+        return redirect("/")
     return render_template("dashboard.html", user=session["user"])
-
-
-# logout route
 
 @app.route("/logout")
 def logout():
-    session.pop("user", None)
-    return redirect("/login")
-
+    session.clear()
+    return redirect("/")
 
 if __name__ == "__main__":
     app.run(debug=True)
-
