@@ -1,0 +1,15 @@
+{
+    "todos": [],
+    "notes": [],
+    "habits": [],
+    "attendance": {
+        "attended": 0,
+        "total": 0
+    },
+    "budget": {
+        "total": 0,
+        "remaining": 0,
+        "expenses": []
+    },
+    "documents": []
+}
