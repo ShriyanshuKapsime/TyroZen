@@ -25,7 +25,7 @@
     ],
     "budget": {
         "total": 5000.0,
-        "remaining": 4790.0,
+        "remaining": 3990.0,
         "expenses": [
             {
                 "item": "dosa",
@@ -41,6 +41,11 @@
                 "item": "north thali",
                 "amount": 130.0,
                 "category": "Food & Drink"
+            },
+            {
+                "item": "vegetables",
+                "amount": 800.0,
+                "category": "Groceries"
             }
         ]
     },
