@@ -1,16 +1,18 @@
-from flask import Flask, render_template, request, redirect, session, jsonify
+from flask import Flask, render_template, request, redirect, session, url_for, flash
+from flask import send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
-import json, os
+from datetime import date
+import json
+import os
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-DATA_DIR = "data"
-USER_DB = os.path.join(DATA_DIR, "users.json")
-
-def ensure_data_dir():
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR)
+UPLOAD_FOLDER = "./uploads/"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+ALLOWED = {"pdf", "png", "jpg", "jpeg"}
+USER_DB = "users.json"
+DATA_DIR = "./data/"
 
 def load_users():
     ensure_data_dir()
@@ -134,7 +136,7 @@ def budget():
 
     budget_data = data["budget"]
 
-    # -------- 1. SET MONTHLY BUDGET --------
+    # monthly budget
     if request.form.get("form_type") == "set_budget":
         total = float(request.form["total"])
         budget_data["total"] = total
@@ -143,7 +145,7 @@ def budget():
         save_user_data(email, data)
         return redirect("/budget")
 
-    # -------- 2. ADD EXPENSE --------
+    # add expense
     if request.form.get("form_type") == "add_expense":
         item = request.form["item"]
         amount = float(request.form["amount"])
@@ -160,7 +162,7 @@ def budget():
         save_user_data(email, data)
         return redirect("/budget")
 
-    # -------- 3. CATEGORY BREAKDOWN --------
+    # category breakdown
     category_totals = {}
     for e in budget_data["expenses"]:
         category_totals[e["category"]] = \
@@ -173,7 +175,139 @@ def budget():
         expenses=budget_data["expenses"],
         category_totals=category_totals
     )
-# documents route 
+
+# Habit tracker
+@app.route("/habits", methods=["GET", "POST"])
+def habits():
+    if "user" not in session:
+        return redirect("/login")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    # ----- Add New Habit -----
+    if request.method == "POST" and request.form.get("form_type") == "add_habit":
+        habit_name = request.form["habit_name"]
+        data["habits"].append({
+            "name": habit_name,
+            "streak": 0,
+            "last_done": None
+        })
+        save_user_data(email, data)
+        return redirect("/habits")
+
+    return render_template("habits.html", habits=data["habits"])
+
+
+@app.route("/habit/done/<int:index>")
+def habit_done(index):
+    if "user" not in session:
+        return redirect("/login")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    today = str(date.today())
+    habit = data["habits"][index]
+
+    # If user already completed it today → do nothing
+    if habit["last_done"] == today:
+        return redirect("/habits")
+
+    # If completed yesterday → streak +=1
+    if habit["last_done"] == str(date.fromordinal(date.today().toordinal() - 1)):
+        habit["streak"] += 1
+    else:
+        # Missed → streak resets
+        habit["streak"] = 1
+
+    habit["last_done"] = today
+
+    save_user_data(email, data)
+    return redirect("/habits")
+
+
+@app.route("/habit/delete/<int:index>")
+def delete_habit(index):
+    if "user" not in session:
+        return redirect("/login")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    data["habits"].pop(index)
+    save_user_data(email, data)
+
+    return redirect("/habits")
+
+# documents upload 2nd route
+@app.route("/uploads/<path:filename>")
+def uploaded_files(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
+
+
+# documents uploads
+from werkzeug.utils import secure_filename
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED
+
+# ---------------- DOCUMENT UPLOAD ----------------
+
+@app.route("/documents", methods=["GET", "POST"])
+def documents():
+    if "user" not in session:
+        return redirect("/login")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    user_folder = os.path.join(UPLOAD_FOLDER, email)
+    os.makedirs(user_folder, exist_ok=True)
+
+    # ----- UPLOAD -----
+    if request.method == "POST":
+        category = request.form.get("category", "Others")
+        file = request.files.get("file")
+
+        if not file or file.filename == "":
+            flash("No file selected.")
+            return redirect("/documents")
+
+        if not allowed_file(file.filename):
+            flash("File type not allowed.")
+            return redirect("/documents")
+
+        filename = secure_filename(str(file.filename))
+        save_path = os.path.join(user_folder, filename)
+        file.save(save_path)
+
+        data["documents"].append({
+            "name": filename,
+            "path": f"{email}/{filename}",
+            "category": category
+        })
+
+        save_user_data(email, data)
+        return redirect("/documents")
+
+    # ----- CATEGORY GROUPING -----
+    docs_by_category = {
+        "Notes": [],
+        "Assignments": [],
+        "Modules": [],
+        "Others": []
+    }
+
+    for d in data["documents"]:
+        cat = d.get("category", "Others")
+        docs_by_category.setdefault(cat, []).append(d)
+
+    return render_template(
+        "documents.html",
+        docs_by_category=docs_by_category
+    )
+
 
 
 # ------------------------------------------
