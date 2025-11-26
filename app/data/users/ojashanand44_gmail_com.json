@@ -1,0 +1,63 @@
+{
+    "todo": [
+        {
+            "task": "lunch",
+            "category": "daily",
+            "priority": "high",
+            "deadline": "",
+            "completed": true
+        },
+        {
+            "task": "hi",
+            "category": "weekly",
+            "priority": "high",
+            "deadline": "2025-11-27",
+            "completed": false
+        },
+        {
+            "task": "hihi",
+            "category": "daily",
+            "priority": "medium",
+            "deadline": "",
+            "completed": true
+        },
+        {
+            "task": "hihihi",
+            "category": "daily",
+            "priority": "low",
+            "deadline": "",
+            "completed": false
+        },
+        {
+            "task": "oj",
+            "category": "daily",
+            "priority": "medium",
+            "deadline": "",
+            "completed": false
+        },
+        {
+            "task": "hh",
+            "category": "daily",
+            "priority": "high",
+            "deadline": "",
+            "completed": false
+        }
+    ],
+    "notes": [
+        {
+            "title": "n1",
+            "content": "",
+            "tags": [
+                "nohjdcxjh"
+            ]
+        },
+        {
+            "title": "hi",
+            "content": "",
+            "tags": []
+        }
+    ],
+    "habits": [],
+    "budget": {},
+    "attendance": {}
+}
