@@ -144,10 +144,34 @@ def logout():
 
 from flask import Flask, render_template, request, redirect, session
 
-# ---- Add/Edit/Delete ----
+# --------- Attendance --------------------------
+def calculate_max_skips(total_classes, attended_classes, classes_done):
+    """
+    Calculates max classes user can skip in the remaining classes
+    while still maintaining 75% overall attendance.
+    """
+    if total_classes <= 0:
+        return 0
+
+    # Minimum number of classes that must be attended to maintain 75%
+    min_attendance_needed = int(0.85 * total_classes + 0.999)  # round up
+
+    # Classes left to be conducted
+    remaining_classes = total_classes - classes_done
+
+    # Classes still required to reach minimum attendance
+    required_attendance_remaining = max(min_attendance_needed - attended_classes, 0)
+
+    # Max skips = remaining classes - required attendance remaining
+    max_skips = remaining_classes - required_attendance_remaining
+
+    return max(max_skips, 0)
+
 
 @app.route("/attendance", methods=["GET", "POST"])
 def attendance():
+    if "user" not in session:
+        return redirect("/login")
     email = session["user"]["email"]
     data = load_user_data(email)
 
@@ -157,14 +181,21 @@ def attendance():
     if request.method == "POST":
         subject_name = request.form["subject"]
         total_classes = int(request.form["total_classes"])
+        classes_done = int(request.form["classes_done"])
         attended_classes = int(request.form["attended_classes"])
 
-        attendance_percentage = round((attended_classes / total_classes) * 100, 2) if total_classes > 0 else 0
-        max_skips = calculate_max_skips(total_classes, attended_classes)
+        # Validate numbers
+        if not (0 <= attended_classes <= classes_done <= total_classes):
+            flash("Invalid attendance values!", "error")
+            return redirect("/attendance")
+
+        attendance_percentage = round((attended_classes / classes_done) * 100, 2) if classes_done > 0 else 0
+        max_skips = calculate_max_skips(total_classes, attended_classes, classes_done)
 
         new_subject = {
             "subject": subject_name,
             "total_classes": total_classes,
+            "classes_done": classes_done,
             "attended_classes": attended_classes,
             "attendance_percentage": attendance_percentage,
             "max_skips": max_skips
@@ -172,39 +203,15 @@ def attendance():
 
         data["attendance"].append(new_subject)
         save_user_data(email, data)
-
         return redirect("/attendance")
 
     return render_template("attendance.html", subjects=data["attendance"])
 
 
-@app.route("/attendance/edit/<int:index>", methods=["GET", "POST"])
-def attendance_edit(index):
-    email = session["user"]["email"]
-    data = load_user_data(email)
-
-    if request.method == "POST":
-        total_classes = int(request.form["total_classes"])
-        attended_classes = int(request.form["attended_classes"])
-        attendance_percentage = round((attended_classes / total_classes) * 100, 2)
-        max_skips = calculate_max_skips(total_classes, attended_classes)
-
-        data["attendance"][index].update({
-            "total_classes": total_classes,
-            "attended_classes": attended_classes,
-            "attendance_percentage": attendance_percentage,
-            "max_skips": max_skips
-        })
-
-        save_user_data(email, data)
-        return redirect("/attendance")
-
-    subject = data["attendance"][index]
-    return render_template("attendance_edit.html", subject=subject, index=index)
-
-
 @app.route("/attendance/delete/<int:index>", methods=["POST"])
 def attendance_delete(index):
+    if "user" not in session:
+        return redirect("/login")
     email = session["user"]["email"]
     data = load_user_data(email)
 
@@ -213,6 +220,46 @@ def attendance_delete(index):
         save_user_data(email, data)
 
     return redirect("/attendance")
+
+
+@app.route("/attendance/edit/<int:index>", methods=["GET", "POST"])
+def attendance_edit(index):
+    if "user" not in session:
+        return redirect("/login")
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    if not (0 <= index < len(data.get("attendance", []))):
+        flash("Invalid index!", "error")
+        return redirect("/attendance")
+
+    subject = data["attendance"][index]
+
+    if request.method == "POST":
+        total_classes = int(request.form["total_classes"])
+        classes_done = int(request.form["classes_done"])
+        attended_classes = int(request.form["attended_classes"])
+
+        # Validate numbers
+        if not (0 <= attended_classes <= classes_done <= total_classes):
+            flash("Invalid attendance values!", "error")
+            return redirect(f"/attendance/edit/{index}")
+
+        attendance_percentage = round((attended_classes / classes_done) * 100, 2) if classes_done > 0 else 0
+        max_skips = calculate_max_skips(total_classes, attended_classes, classes_done)
+
+        subject.update({
+            "total_classes": total_classes,
+            "classes_done": classes_done,
+            "attended_classes": attended_classes,
+            "attendance_percentage": attendance_percentage,
+            "max_skips": max_skips
+        })
+
+        save_user_data(email, data)
+        return redirect("/attendance")
+
+    return render_template("attendance_edit.html", subject=subject, index=index)
 
 # --------- Budget (single route) --------------
 @app.route("/budget", methods=["GET", "POST"])
