@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Krish J",
+        "email": "krishjaiswal530@gmail.com",
+        "password": "scrypt:32768:8:1$tyETNk7QsegTIpI0$614917208ade60f61c6be34819e5ed6e904c88a9021fe7946511b7ff2ed9bb0a86d69641e5cb134f889c77b1c8fdb0073255675f93070f23942bd4a2575de97c"
+    },
+    {
+        "name": "Shriyanshu Kumar kapsime",
+        "email": "shriyanshu.0022@gmail.com",
+        "password": "scrypt:32768:8:1$LPbodoAAJKA9gaZ1$696054a4df03b0e6eb69a1410516f42ee5b3fe2efbbc897cd61f134fea40182c9fb8b061898a5328374d3bff4ca393daee6db4fe1087b85bba7b22abb9f67d73"
+    }
+]
