@@ -2,10 +2,22 @@
     "todos": [],
     "notes": [],
     "habits": [],
-    "attendance": {
-        "attended": 0,
-        "total": 0
-    },
+    "attendance": [
+        {
+            "subject": "chem",
+            "total_classes": 100,
+            "attended_classes": 60,
+            "attendance_percentage": 60.0,
+            "max_skips": 0
+        },
+        {
+            "subject": "phy",
+            "total_classes": 80,
+            "attended_classes": 75,
+            "attendance_percentage": 93.75,
+            "max_skips": 20
+        }
+    ],
     "budget": {
         "total": 0,
         "remaining": 0,

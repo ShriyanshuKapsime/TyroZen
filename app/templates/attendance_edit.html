@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Attendance</title>
+<style>
+body { font-family: Arial; margin: 20px; }
+input[type=number] { padding:5px; margin:5px; width:200px; }
+button { padding:5px 10px; margin:5px; }
+</style>
+</head>
+<body>
+<h1>Edit Attendance: {{ subject['subject'] }}</h1>
+
+<form method="POST">
+<label>Total Classes:</label>
+<input type="number" name="total_classes" value="{{ subject['total_classes'] }}" min="1" required><br>
+<label>Attended Classes:</label>
+<input type="number" name="attended_classes" value="{{ subject['attended_classes'] }}" min="0" required><br>
+<button type="submit">Update</button>
+<a href="/attendance">Cancel</a>
+</form>
+
+</body>
+</html>

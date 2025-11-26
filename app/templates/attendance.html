@@ -16,15 +16,13 @@ th, td { border: 1px solid #000; padding: 8px; text-align:center; }
 <body>
 <h1>Attendance Tracker</h1>
 
-<!-- Add Subject Form -->
-<form method="POST">
+<form method="POST" action="/attendance">
 <input type="text" name="subject" placeholder="Subject Name" required>
 <input type="number" name="total_classes" placeholder="Total Classes" min="1" required>
 <input type="number" name="attended_classes" placeholder="Attended Classes" min="0" required>
 <button type="submit">Add Subject</button>
 </form>
 
-<!-- Attendance Table -->
 <table>
 <tr>
 <th>Subject</th>
@@ -35,15 +33,17 @@ th, td { border: 1px solid #000; padding: 8px; text-align:center; }
 <th>Actions</th>
 </tr>
 {% for s in subjects %}
-<tr class="{{ 'green' if s.attendance_percentage >= 75 else 'red' }}">
-<td>{{ s.subject }}</td>
-<td>{{ s.total_classes }}</td>
-<td>{{ s.attended_classes }}</td>
-<td>{{ s.attendance_percentage }}%</td>
-<td>{{ s.max_skips }}</td>
+<tr class="{{ 'green' if s['attendance_percentage'] >= 75 else 'red' }}">
+<td>{{ s['subject'] }}</td>
+<td>{{ s['total_classes'] }}</td>
+<td>{{ s['attended_classes'] }}</td>
+<td>{{ s['attendance_percentage'] }}%</td>
+<td>{{ s['max_skips'] }}</td>
 <td>
 <a href="/attendance/edit/{{ loop.index0 }}">Edit</a> |
-<a href="/attendance/delete/{{ loop.index0 }}">Delete</a>
+<form method="POST" action="/attendance/delete/{{ loop.index0 }}" style="display:inline;">
+  <button type="submit" onclick="return confirm('Delete this subject?')">Delete</button>
+</form>
 </td>
 </tr>
 {% endfor %}

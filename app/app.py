@@ -142,29 +142,77 @@ def logout():
     session.clear()
     return redirect("/")
 
-# --------- Attendance --------------------------
+from flask import Flask, render_template, request, redirect, session
+
+# ---- Add/Edit/Delete ----
+
 @app.route("/attendance", methods=["GET", "POST"])
 def attendance():
-    if "user" not in session:
-        return redirect("/")
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    if "attendance" not in data:
+        data["attendance"] = []
+
+    if request.method == "POST":
+        subject_name = request.form["subject"]
+        total_classes = int(request.form["total_classes"])
+        attended_classes = int(request.form["attended_classes"])
+
+        attendance_percentage = round((attended_classes / total_classes) * 100, 2) if total_classes > 0 else 0
+        max_skips = calculate_max_skips(total_classes, attended_classes)
+
+        new_subject = {
+            "subject": subject_name,
+            "total_classes": total_classes,
+            "attended_classes": attended_classes,
+            "attendance_percentage": attendance_percentage,
+            "max_skips": max_skips
+        }
+
+        data["attendance"].append(new_subject)
+        save_user_data(email, data)
+
+        return redirect("/attendance")
+
+    return render_template("attendance.html", subjects=data["attendance"])
+
+
+@app.route("/attendance/edit/<int:index>", methods=["GET", "POST"])
+def attendance_edit(index):
     email = session["user"]["email"]
     data = load_user_data(email)
 
     if request.method == "POST":
-        try:
-            attended = int(request.form.get("attended", 0))
-            total = int(request.form.get("total", 0))
-        except ValueError:
-            flash("Invalid numbers", "error")
-            return redirect("/attendance")
-        data["attendance"]["attended"] = attended
-        data["attendance"]["total"] = total
+        total_classes = int(request.form["total_classes"])
+        attended_classes = int(request.form["attended_classes"])
+        attendance_percentage = round((attended_classes / total_classes) * 100, 2)
+        max_skips = calculate_max_skips(total_classes, attended_classes)
+
+        data["attendance"][index].update({
+            "total_classes": total_classes,
+            "attended_classes": attended_classes,
+            "attendance_percentage": attendance_percentage,
+            "max_skips": max_skips
+        })
+
         save_user_data(email, data)
         return redirect("/attendance")
 
-    att = data.get("attendance", {"attended": 0, "total": 0})
-    percentage = round((att["attended"] / att["total"] * 100), 2) if att["total"] > 0 else 0
-    return render_template("attendance.html", attended=att["attended"], total=att["total"], percentage=percentage)
+    subject = data["attendance"][index]
+    return render_template("attendance_edit.html", subject=subject, index=index)
+
+
+@app.route("/attendance/delete/<int:index>", methods=["POST"])
+def attendance_delete(index):
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    if 0 <= index < len(data.get("attendance", [])):
+        data["attendance"].pop(index)
+        save_user_data(email, data)
+
+    return redirect("/attendance")
 
 # --------- Budget (single route) --------------
 @app.route("/budget", methods=["GET", "POST"])
