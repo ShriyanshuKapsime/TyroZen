@@ -7,6 +7,20 @@ from werkzeug.utils import secure_filename
 from datetime import date
 import json
 import os
+import google.generativeai as genai
+
+GEMINI_API_KEY = "AIzaSyBNabw8DFSOEZwdAJ07YOLL5plfB_FDD5U"
+genai.configure(api_key=GEMINI_API_KEY)
+
+model = genai.GenerativeModel("models/gemini-2.5-flash")
+
+def call_ai(prompt):
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"AI Error: {str(e)}"
+
 
 # ------------------ CONFIG ------------------
 app = Flask(__name__)
@@ -558,6 +572,34 @@ def delete_document(path):
 
     # 3. Redirect back
     return redirect(url_for("documents"))
+
+
+
+# ai budget
+@app.route("/ai/budget")
+def ai_budget():
+    if "user" not in session:
+        return redirect("/")
+
+    email = session["user"]["email"]
+    data = load_user_data(email)
+
+    budget = data["budget"]
+    prompt = f"""
+    You are an AI financial advisor for college students.
+
+    Analyze the user's budget:
+
+    Total Budget: {budget.get('total')}
+    Remaining: {budget.get('remaining')}
+    Expenses: {budget.get('expenses')}
+
+    Give clear, simple, actionable advice in 4–6 sentences.
+    """
+
+    advice = call_ai(prompt)
+
+    return render_template("ai_budget.html", advice=advice, budget=budget)
 
 
 # -----------------------------------------------

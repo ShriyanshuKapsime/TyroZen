@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Budget Advisor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f8f9fc;
+        }
+        h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #4e73df;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #2e59d9;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>💡 AI Budget Advisor</h2>
+
+<!-- BUDGET SUMMARY -->
+<div class="card">
+    <h3>📊 Budget Summary</h3>
+    <p><strong>Total Budget:</strong> ₹{{ budget.total }}</p>
+    <p><strong>Remaining:</strong> ₹{{ budget.remaining }}</p>
+</div>
+
+<!-- EXPENSE LIST -->
+<div class="card">
+    <h3>🧾 Your Expenses</h3>
+    {% if budget.expenses %}
+    <ul>
+        {% for e in budget.expenses %}
+        <li>{{ e.item }} — ₹{{ e.amount }} <small>({{ e.category }})</small></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No expenses recorded yet.</p>
+    {% endif %}
+</div>
+
+<!-- AI RESPONSE -->
+<div class="card">
+    <h3>🤖 AI Advice</h3>
+    <p>{{ advice }}</p>
+
+    <!-- REGENERATE ADVICE BUTTON -->
+    <a href="/ai/budget" class="btn">🔁 Generate Again</a>
+</div>
+
+<!-- BACK BUTTON -->
+<a href="/budget" class="btn">⬅ Back to Budget</a>
+
+</body>
+</html>
+
