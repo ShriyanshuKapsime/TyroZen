@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Budget Manager</title>
+</head>
+<body>
+
+<h2>Budget Manager</h2>
+
+<!-- 1. SET BUDGET -->
+<h3>Set Monthly Budget</h3>
+<form method="POST">
+    <input type="hidden" name="form_type" value="set_budget">
+    <input type="number" name="total" placeholder="Enter total budget" step="0.01" required>
+    <button type="submit">Save Budget</button>
+</form>
+
+<p><strong>Total Budget:</strong> ₹{{ total }}</p>
+<p><strong>Remaining:</strong> ₹{{ remaining }}</p>
+
+<hr>
+
+<!-- 2. ADD EXPENSE -->
+<h3>Add Expense</h3>
+<form method="POST">
+    <input type="hidden" name="form_type" value="add_expense">
+
+    <input type="text" name="item" placeholder="Item" required>
+    <input type="number" name="amount" placeholder="Amount" step="0.01" required>
+
+    <select name="category" required>
+        <option>Food</option>
+        <option>Transport</option>
+        <option>Shopping</option>
+        <option>Books</option>
+        <option>Other</option>
+    </select>
+
+    <button type="submit">Add Expense</button>
+</form>
+
+<hr>
+
+<!-- 3. LIST OF EXPENSES -->
+<h3>Expenses</h3>
+<ul>
+{% for e in expenses %}
+    <li>{{ e.item }} - ₹{{ e.amount }} ({{ e.category }})</li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<!-- 4. Category spending -->
+<h3>Category Breakdown</h3>
+<ul>
+{% for cat, amt in category_totals.items() %}
+    <li>{{ cat }}: ₹{{ amt }}</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>
+
