@@ -1,0 +1,146 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e4f7e9;
+    margin: 20px;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input[type=text] {
+    padding: 8px;
+    width: 220px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+input[type=text]:focus {
+    border-color: #4CAF50;
+}
+
+button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Grid for 2 cards per row */
+.habit-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Card styling */
+.habit-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+.habit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.habit-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.streak-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.streak-fire {
+    margin-left: 5px;
+    color: #ff4500;
+    transition: transform 0.3s;
+}
+
+.last-done {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    background: #e0e0e0;
+    border-radius: 8px;
+    height: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #f9a825, #4CAF50);
+    height: 100%;
+    width: 0;
+    transition: width 0.8s ease-in-out;
+}
+
+.card-buttons a {
+    text-decoration: none;
+    margin-right: 10px;
+    font-size: 14px;
+    transition: transform 0.2s;
+}
+
+.card-buttons a:hover {
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.done-animation {
+    animation: pop 0.5s ease;
+    transform: scale(1.3);
+    color: #4CAF50 !important;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive */
+@media(max-width: 600px){
+    .habit-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}

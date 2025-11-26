@@ -1,7 +1,18 @@
 {
     "todos": [],
     "notes": [],
-    "habits": [],
+    "habits": [
+        {
+            "name": "running",
+            "streak": 1,
+            "last_done": "2025-11-26"
+        },
+        {
+            "name": "cycling",
+            "streak": 0,
+            "last_done": null
+        }
+    ],
     "attendance": [
         {
             "subject": "phy",

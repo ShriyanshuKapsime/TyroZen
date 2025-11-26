@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Habit Tracker</title>
+<meta charset="UTF-8">
+<title>Habit Tracker</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='habits.css') }}">
 </head>
 <body>
 
@@ -17,22 +19,61 @@
 <hr>
 
 <!-- Habit List -->
-<ul>
+<div class="habit-list">
     {% for h in habits %}
-        <li>
-            <strong>{{ h.name }}</strong>  
-            — Streak: {{ h.streak }}
-
-            <a href="/habit/done/{{ loop.index0 }}">Mark Done</a>
-            <a href="/habit/delete/{{ loop.index0 }}">Delete</a>
-
+        <div class="habit-card" data-streak="{{ h.streak }}">
+            <div class="habit-name">{{ h.name }}</div>
+            <div class="streak-container">
+                <div class="streak-label">Streak:</div>
+                <div class="streak-count">{{ h.streak }}</div>
+                <span class="streak-fire">{% if h.streak >= 1 %}🔥{% endif %}</span>
+            </div>
             {% if h.last_done %}
-                (Last Done: {{ h.last_done }})
+                <div class="last-done">Last Done: {{ h.last_done }}</div>
             {% endif %}
-        </li>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ h.streak * 10 }}%;"></div>
+            </div>
+            <div class="card-buttons">
+                <a href="/habit/done/{{ loop.index0 }}" class="mark-done">✅ Mark Done</a>
+                <a href="/habit/delete/{{ loop.index0 }}" class="delete-habit">🗑️ Delete</a>
+            </div>
+        </div>
     {% endfor %}
-</ul>
+</div>
+
+<script>
+// Confirm delete
+document.querySelectorAll('.delete-habit').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        if(!confirm('Are you sure you want to delete this habit?')) e.preventDefault();
+    });
+});
+
+// Animate streak/fire
+document.querySelectorAll('.mark-done').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const card = this.closest('.habit-card');
+        const streakCount = card.querySelector('.streak-count');
+        const fire = card.querySelector('.streak-fire');
+        streakCount.classList.add('done-animation');
+        fire.classList.add('done-animation');
+        setTimeout(() => {
+            streakCount.classList.remove('done-animation');
+            fire.classList.remove('done-animation');
+        }, 500);
+    });
+});
+
+// Animate progress bars
+window.addEventListener('load', () => {
+    document.querySelectorAll('.progress-fill').forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => { bar.style.width = width; }, 100);
+    });
+});
+</script>
 
 </body>
 </html>
-

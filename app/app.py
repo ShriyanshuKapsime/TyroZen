@@ -314,29 +314,38 @@ def budget():
                            category_totals=category_totals)
 
 # --------- Habit Tracker -----------------------
+# --------- Habit Tracker -----------------------
+# ------------------ Habit Tracker ------------------
 @app.route("/habits", methods=["GET", "POST"])
 def habits():
     if "user" not in session:
-        return redirect("/")
+        return redirect("/login")  # or "/" depending on your app
     email = session["user"]["email"]
     data = load_user_data(email)
 
+    # Add new habit
     if request.method == "POST" and request.form.get("form_type") == "add_habit":
         name = request.form.get("habit_name", "").strip()
         if name:
-            data.setdefault("habits", []).append({"name": name, "streak": 0, "last_done": None})
+            data.setdefault("habits", []).append({
+                "name": name,
+                "streak": 0,
+                "last_done": None
+            })
             save_user_data(email, data)
         return redirect("/habits")
 
     return render_template("habits.html", habits=data.get("habits", []))
 
+
 @app.route("/habit/done/<int:index>")
 def habit_done(index):
     if "user" not in session:
-        return redirect("/")
+        return redirect("/login")
     email = session["user"]["email"]
     data = load_user_data(email)
     habits = data.get("habits", [])
+
     if 0 <= index < len(habits):
         habit = habits[index]
         today = date.today()
@@ -346,27 +355,34 @@ def habit_done(index):
                 last = date.fromisoformat(habit["last_done"])
             except:
                 last = None
-        # already done today?
-        if habit.get("last_done") == str(date.today()):
+
+        # Already done today?
+        if habit.get("last_done") == str(today):
             return redirect("/habits")
-        # if done yesterday -> increment
+
+        # Increment streak if yesterday done, else reset
         if last and (today.toordinal() - last.toordinal() == 1):
             habit["streak"] = habit.get("streak", 0) + 1
         else:
             habit["streak"] = 1
+
         habit["last_done"] = str(today)
         save_user_data(email, data)
+
     return redirect("/habits")
+
 
 @app.route("/habit/delete/<int:index>")
 def habit_delete(index):
     if "user" not in session:
-        return redirect("/")
+        return redirect("/login")
     email = session["user"]["email"]
     data = load_user_data(email)
+
     if 0 <= index < len(data.get("habits", [])):
         data["habits"].pop(index)
         save_user_data(email, data)
+
     return redirect("/habits")
 
 # --------- Todo -------------------------------
