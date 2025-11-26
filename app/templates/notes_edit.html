@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Notes</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { display: flex; gap: 20px; }
+        .sidebar { width: 200px; }
+        .notes-section { flex: 1; }
+        .note-card { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .tag { background: #eee; padding: 2px 6px; margin-right: 5px; border-radius: 3px; font-size: 0.9em; }
+        .toolbar button { margin-right: 5px; margin-bottom: 5px; }
+        #editor { border: 1px solid #ccc; padding: 10px; min-height: 150px; margin-bottom: 10px; }
+        table { border-collapse: collapse; width: 100%; margin: 5px 0; }
+        table, th, td { border: 1px solid #000; padding: 5px; }
+        ul { padding-left: 20px; }
+        input[type="text"] { width: 100%; margin-bottom: 5px; padding: 5px; }
+        button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+<h1>My Notes</h1>
+
+<div class="container">
+    <!-- Sidebar for Tags -->
+    <div class="sidebar">
+        <h3>Tags</h3>
+        <ul>
+            <li><a href="/notes">All</a></li>
+            {% for tag in all_tags %}
+            <li><a href="/notes?tag={{ tag }}">{{ tag }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Main Notes Section -->
+    <div class="notes-section">
+        <!-- Search Bar -->
+        <form method="GET">
+            <input type="text" name="search" placeholder="Search title..." value="{{ search_query }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Add Note Form -->
+        <h3>Add Note</h3>
+        <form method="POST" id="noteForm">
+            <input type="text" name="title" placeholder="Title" required>
+            <input type="text" name="tags" placeholder="Tags (comma separated)">
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <button type="button" onclick="insertContent('<table border=1><tr><th>Header</th></tr><tr><td>Data</td></tr></table><br>')">Insert Table</button>
+                <button type="button" onclick="insertContent('<ul><li><input type=checkbox> New Task</li></ul><br>')">Insert Checklist</button>
+            </div>
+
+            <!-- Editable div for note content -->
+            <div id="editor" contenteditable="true"></div>
+
+            <!-- Hidden input to submit HTML content -->
+            <input type="hidden" name="content" id="noteContent">
+
+            <button type="submit" onclick="submitNote(event)">Save Note</button>
+        </form>
+
+        <!-- Display Notes -->
+        <h3>All Notes</h3>
+        {% for note in notes %}
+        <div class="note-card">
+            <h4>{{ note.title }}</h4>
+            <div>
+                Tags:
+                {% for tag in note.tags %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            <div class="note-content">{{ note.content | safe }}</div>
+            <a href="/notes/edit/{{ loop.index0 }}">Edit</a> |
+            <a href="/notes/delete/{{ loop.index0 }}">Delete</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function insertContent(html) {
+    const editor = document.getElementById("editor");
+    editor.focus();
+    const sel = window.getSelection();
+    if (sel.getRangeAt && sel.rangeCount) {
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        const el = document.createElement("div");
+        el.innerHTML = html;
+        const frag = document.createDocumentFragment();
+        let node, lastNode;
+        while ((node = el.firstChild)) {
+            lastNode = frag.appendChild(node);
+        }
+        range.insertNode(frag);
+        if (lastNode) {
+            range.setStartAfter(lastNode);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    } else {
+        editor.innerHTML += html;
+    }
+}
+
+function submitNote(e) {
+    e.preventDefault();
+    const content = document.getElementById("editor").innerHTML;
+    if (!content.trim()) { alert("Note cannot be empty!"); return; }
+    document.getElementById("noteContent").value = content;
+    document.getElementById("noteForm").submit();
+}
+</script>
+</body>
+</html>
