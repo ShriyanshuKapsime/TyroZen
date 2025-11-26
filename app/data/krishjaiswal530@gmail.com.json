@@ -1,0 +1,26 @@
+{
+    "todos": [],
+    "notes": [],
+    "habits": [],
+    "attendance": {
+        "attended": 30,
+        "total": 120
+    },
+    "budget": {
+        "total": 3000.0,
+        "remaining": 2300.0,
+        "expenses": [
+            {
+                "item": "food",
+                "amount": 200.0,
+                "category": "Food"
+            },
+            {
+                "item": "car",
+                "amount": 500.0,
+                "category": "Transport"
+            }
+        ]
+    },
+    "documents": []
+}
