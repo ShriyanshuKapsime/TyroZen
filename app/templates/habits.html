@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Habit Tracker</title>
+</head>
+<body>
+
+<h2>Your Habits</h2>
+
+<!-- Add Habit -->
+<form method="POST">
+    <input type="hidden" name="form_type" value="add_habit">
+    <input type="text" name="habit_name" placeholder="New habit name" required>
+    <button type="submit">Add Habit</button>
+</form>
+
+<hr>
+
+<!-- Habit List -->
+<ul>
+    {% for h in habits %}
+        <li>
+            <strong>{{ h.name }}</strong>  
+            — Streak: {{ h.streak }}
+
+            <a href="/habit/done/{{ loop.index0 }}">Mark Done</a>
+            <a href="/habit/delete/{{ loop.index0 }}">Delete</a>
+
+            {% if h.last_done %}
+                (Last Done: {{ h.last_done }})
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
+

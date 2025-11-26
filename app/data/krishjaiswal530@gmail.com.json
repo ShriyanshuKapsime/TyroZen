@@ -1,7 +1,13 @@
 {
     "todos": [],
     "notes": [],
-    "habits": [],
+    "habits": [
+        {
+            "name": "gym",
+            "streak": 1,
+            "last_done": "2025-11-26"
+        }
+    ],
     "attendance": {
         "attended": 30,
         "total": 120
@@ -22,5 +28,10 @@
             }
         ]
     },
-    "documents": []
+    "documents": [
+        {
+            "name": "Program_5.pdf",
+            "path": "krishjaiswal530@gmail.com/Program_5.pdf"
+        }
+    ]
 }
