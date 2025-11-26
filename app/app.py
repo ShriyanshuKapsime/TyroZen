@@ -295,8 +295,9 @@ def budget():
         data["budget"] = {"total": 0, "remaining": 0, "expenses": []}
 
     budget_data = data["budget"]
+    ai_advice = None   # NEW — default AI response is empty
 
-    # set total budget
+    # ---------------- SET BUDGET ----------------
     if request.form.get("form_type") == "set_budget":
         try:
             total = float(request.form.get("total", 0))
@@ -309,7 +310,7 @@ def budget():
         save_user_data(email, data)
         return redirect("/budget")
 
-    # add expense
+    # ---------------- ADD EXPENSE ----------------
     if request.form.get("form_type") == "add_expense":
         item = request.form.get("item", "").strip()
         try:
@@ -323,18 +324,35 @@ def budget():
         save_user_data(email, data)
         return redirect("/budget")
 
-    # compute category totals
+    # ---------------- AI ADVICE ----------------
+    if request.form.get("form_type") == "ai_advice":
+        prompt = f"""
+        You are an AI financial advisor for college students.
+        Analyze this budget:
+
+        Total Budget: {budget_data.get('total')}
+        Remaining: {budget_data.get('remaining')}
+        Expenses: {budget_data.get('expenses')}
+
+        Give clear, simple, actionable advice in 4–6 sentences.
+        """
+        ai_advice = call_ai(prompt)
+
+    # ---------------- CATEGORY TOTALS ----------------
     category_totals = {}
     for e in budget_data.get("expenses", []):
         category_totals[e["category"]] = category_totals.get(e["category"], 0) + e["amount"]
 
-    return render_template("budget.html",
-                           total=budget_data.get("total", 0),
-                           remaining=budget_data.get("remaining", 0),
-                           expenses=budget_data.get("expenses", []),
-                           category_totals=category_totals)
+    return render_template(
+        "budget.html",
+        total=budget_data.get("total", 0),
+        remaining=budget_data.get("remaining", 0),
+        expenses=budget_data.get("expenses", []),
+        category_totals=category_totals,
+        ai_advice=ai_advice     # NEW — pass AI text to page
+    )
 
-# --------- Habit Tracker -----------------------
+
 # --------- Habit Tracker -----------------------
 # ------------------ Habit Tracker ------------------
 @app.route("/habits", methods=["GET", "POST"])

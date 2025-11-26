@@ -11,13 +11,13 @@
 <body>
     <nav class="navbar">
         <a href="{{ url_for('todo') }}" class="nav-item" data-nav="todo">To-Do</a>
-        <a  href="{{ url_for('notes') }}" class="nav-item" data-nav="notes">Notes</a>
+        <a href="{{ url_for('notes') }}" class="nav-item" data-nav="notes">Notes</a>
         <a href="{{ url_for('habits') }}" class="nav-item" data-nav="habits">Habits</a>
         <a href="{{ url_for('dashboard') }}" class="nav-item nav-dashboard" data-nav="dashboard">Dashboard</a>
         <a href="{{ url_for('attendance') }}" class="nav-item" data-nav="attendance">Attendance</a>
         <a href="{{ url_for('budget') }}" class="nav-item" data-nav="budget">Budget</a>
         <a href="{{ url_for('documents') }}" class="nav-item" data-nav="documents">Documents</a>
-    </nav>
+    </nav>
 
 <section class="page-wrap">
   <div class="container">
@@ -83,7 +83,19 @@
           </dl>
         </div>
 
-       
+
+        <!-- ★★★★★ AI BUDGET ADVISOR BUTTON ★★★★★ -->
+        <div class="card ai">
+            <h3>AI Budget Advisor</h3>
+            <p class="muted">Let AI analyze your spending and give suggestions.</p>
+
+            <a href="{{ url_for('ai_budget') }}">
+                <button class="btn primary" style="width:100%; margin-top:10px;">
+                    Generate AI Advice
+                </button>
+            </a>
+        </div>
+
       </div>
 
       <!-- RIGHT COLUMN -->
@@ -96,66 +108,5 @@
 
         <div class="card todo">
           <h3>Category Breakdown</h3>
-          <canvas id="barChart"></canvas>
-        </div>
+          <canvas id="barChart">
 
-        <div class="card todo">
-          <h3>Recent Expenses</h3>
-          <table class="expenses-table">
-            <thead>
-              <tr><th>Item</th><th>Category</th><th>Amount</th></tr>
-            </thead>
-
-            <tbody>
-              {% for e in expenses|reverse %}
-                <tr>
-                  <td>{{ e.item }}</td>
-                  <td>{{ e.category }}</td>
-                  <td>₹ {{ e.amount|round(2) }}</td>
-                </tr>
-              {% else %}
-                <tr><td colspan="3" class="muted">No expenses yet</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<script>
-  // Data from backend
-  const labels = {{ category_totals.keys()|list|tojson }};
-  const values = {{ category_totals.values()|list|tojson }};
-
-  // PIE CHART
-  new Chart(document.getElementById("pieChart"), {
-    type: "pie",
-    data: {
-      labels: labels,
-      datasets: [{
-        data: values,
-        backgroundColor: ["#e7f0ff", "#f7ecc5", "#e4f7e9", "#ffe8d3", "#f0e8ff", "#ececec"]
-      }]
-    }
-  });
-
-  // BAR CHART
-  new Chart(document.getElementById("barChart"), {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Amount (₹)",
-        data: values,
-        backgroundColor: "#3A7AFE"
-      }]
-    }
-  });
-</script>
-
-</body>
-</html>
